@@ -1,0 +1,91 @@
+:root {
+  --primary: #0b5d1e;
+  --primary-dark: #053b06;
+  --accent: #5fa575;
+  --secondary: #4b793b;
+  --bg: #f4f7f5;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Global background + text */
+body {
+  background-color: #8ebf96;
+  color: #1f2937;
+}
+
+.navbar {
+  background-color: #4b793b !important;
+}
+
+.navbar a {
+  color: white !important;
+}
+
+a.dropdown-item {
+  color: black !important;
+}
+
+.navbar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#contact-us {
+  background-color: #5fa575 !important;
+}
+
+/* Make Bootstrap containers transparent */
+.container {
+  background-color: transparent !important;
+}
+
+/* Buttons (forest green theme) */
+.btn-success {
+  background-color: #2f6f4f;
+  border-color: #2f6f4f;
+}
+
+.btn-success:hover {
+  background-color: #1f4d36;
+  border-color: #1f4d36;
+}
+
+#finance-btn {
+  margin-top: 40px;
+}
+
+.review-card {
+  height: 100%;
+  width: 400px;
+  border-radius: 16px;
+  margin: 15px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+}
+
+.review-item {
+  padding: 20px 0;
+}
+
+.review-item p {
+  margin-bottom: 0;
+  color: #444;
+}
+
+.reviews-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Smooth modern feel */
+section {
+  padding: 60px 0;
+}

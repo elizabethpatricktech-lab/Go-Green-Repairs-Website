@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Python
+backend/venv/
+**/__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+
+# React
+frontend/node_modules/
+node_modules/
+frontend/dist/
+
+# Editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
