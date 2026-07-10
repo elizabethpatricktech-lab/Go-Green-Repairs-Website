@@ -2,7 +2,10 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Service, Review
-from .serializers import ServiceSerializer, ReviewSerializer
+from .serializers import ServiceSerializer, ReviewSerializer, RegisterSerializer
+from rest_framework import generics
+from django.contrib.auth.models import User
+
 
 
 @api_view(['GET'])
@@ -17,3 +20,7 @@ def get_reviews(request):
     reviews = Review.objects.all()
     serializer = ReviewSerializer(reviews, many=True)
     return Response(serializer.data)
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer

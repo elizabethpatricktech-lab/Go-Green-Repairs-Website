@@ -6,6 +6,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Financing from "./pages/Financing";
 import MoreReviews from "./pages/MoreReviews";
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 export default function App() {
   return (
@@ -17,6 +19,8 @@ export default function App() {
       <Route path="/more-reviews" element={<MoreReviews />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 }

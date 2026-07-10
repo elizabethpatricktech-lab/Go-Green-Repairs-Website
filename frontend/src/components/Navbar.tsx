@@ -1,14 +1,27 @@
 import "bootstrap/js/dist/dropdown";
-import "bootstrap/js/dist/dropdown";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const isLoggedIn = !!localStorage.getItem("access");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+
+    navigate("/");
+  };
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <a className="navbar-brand" href="/">
+        {/* Logo */}
+        <Link className="navbar-brand" to="/">
           Go Green Repairs
-        </a>
+        </Link>
 
+        {/* Mobile Toggle */}
         <button
           className="navbar-toggler"
           type="button"
@@ -22,16 +35,19 @@ const Navbar = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNavDropdown">
+          {/* Left Side Navigation */}
           <ul className="navbar-nav">
-            {/* HOME DROPDOWN */}
+            {/* Home Dropdown */}
             <li className="nav-item dropdown">
-              <a
+              <Link
                 className="nav-link dropdown-toggle"
-                href="/"
+                to="/"
+                role="button"
                 data-bs-toggle="dropdown"
               >
                 Home
-              </a>
+              </Link>
+
               <ul className="dropdown-menu">
                 <li>
                   <a className="dropdown-item" href="/#services">
@@ -64,38 +80,77 @@ const Navbar = () => {
                 </li>
               </ul>
             </li>
-            {/* FULL PAGES */}
+
             <li className="nav-item">
-              <a className="nav-link" href="/brands">
+              <Link className="nav-link" to="/brands">
                 Brands
-              </a>
+              </Link>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="/more-about-us">
+              <Link className="nav-link" to="/more-about-us">
                 More About Us
-              </a>
+              </Link>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="/financing">
+              <Link className="nav-link" to="/financing">
                 More About Financing
-              </a>
+              </Link>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="/more-reviews">
+              <Link className="nav-link" to="/more-reviews">
                 More Reviews
-              </a>
+              </Link>
             </li>
-            {/* CONTACT (SCROLLS href HOME PAGE CONTACT SECTION) */}
+
             <li className="nav-item">
               <a className="nav-link" href="/#contact-us">
                 Contact Us
               </a>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="/privacy-policy">
+              <Link className="nav-link" to="/privacy-policy">
                 Privacy Policy
-              </a>
+              </Link>
             </li>
+          </ul>
+
+          <ul className="navbar-nav ms-auto align-items-lg-center">
+            {isLoggedIn ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/dashboard">
+                    Dashboard
+                  </Link>
+                </li>
+
+                <li className="nav-item ms-lg-2">
+                  <button
+                    className="btn btn-outline-success"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">
+                    Login
+                  </Link>
+                </li>
+
+                <li className="nav-item ms-lg-2">
+                  <Link className="btn btn-success" to="/register">
+                    Create Account
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

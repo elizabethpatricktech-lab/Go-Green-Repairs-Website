@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   const [services, setServices] = useState([]);
@@ -28,18 +29,21 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="container mt-4">
-      <h2>My Services</h2>
+    <div>
+      <Navbar></Navbar>
+      <div className="container mt-4">
+        <h2>My Services</h2>
 
-      {services.map((service: any) => (
-        <div key={service.id} className="mb-3 p-3 border rounded">
-          <h5>{service.service_type}</h5>
-          <span className={`badge bg-${getStatusColor(service.status)}`}>
-            {service.status}
-          </span>
-          <p>Price: {service.price || "TBD"}</p>
-        </div>
-      ))}
+        {services.map((service: any) => (
+          <div key={service.id} className="mb-3 p-3 border rounded">
+            <h5>{service.service_type}</h5>
+            <span className={`badge bg-${getStatusColor(service.status)}`}>
+              {service.status}
+            </span>
+            <p>Price: {service.price || "TBD"}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
