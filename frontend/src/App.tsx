@@ -8,6 +8,8 @@ import MoreReviews from "./pages/MoreReviews";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 export default function App() {
   return (
@@ -18,9 +20,31 @@ export default function App() {
       <Route path="/financing" element={<Financing />} />
       <Route path="/more-reviews" element={<MoreReviews />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
     </Routes>
   );
 }

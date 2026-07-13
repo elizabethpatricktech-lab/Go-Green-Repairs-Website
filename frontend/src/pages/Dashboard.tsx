@@ -1,9 +1,18 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { getServices } from "../services/serviceService";
 
 const Dashboard = () => {
-  const [services, setServices] = useState([]);
+  interface Service {
+    id: number;
+    service_type: string;
+    status: string;
+    price: string | null;
+    date: string;
+  }
+
+  const [services, setServices] = useState<Service[]>([]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -23,9 +32,16 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/services/")
-      .then((res) => res.json())
-      .then((data) => setServices(data));
+    const loadServices = async () => {
+      try {
+        const data = await getServices();
+        setServices(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadServices();
   }, []);
 
   return (
@@ -34,7 +50,7 @@ const Dashboard = () => {
       <div className="container mt-4">
         <h2>My Services</h2>
 
-        {services.map((service: any) => (
+        {services.map((service) => (
           <div key={service.id} className="mb-3 p-3 border rounded">
             <h5>{service.service_type}</h5>
             <span className={`badge bg-${getStatusColor(service.status)}`}>

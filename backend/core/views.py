@@ -5,12 +5,15 @@ from .models import Service, Review
 from .serializers import ServiceSerializer, ReviewSerializer, RegisterSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_services(request):
-    services = Service.objects.all()
+    services = Service.objects.filter(user=request.user)
     serializer = ServiceSerializer(services, many=True)
     return Response(serializer.data)
 
