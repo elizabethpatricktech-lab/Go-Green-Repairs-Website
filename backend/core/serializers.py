@@ -7,6 +7,15 @@ class ServiceSerializer(serializers.ModelSerializer):
         model = Service
         fields = '__all__'
 
+class ServiceRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            "service_type",
+            "description",
+            "requested_date",
+        ]
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)    

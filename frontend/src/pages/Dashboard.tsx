@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { getServices } from "../services/serviceService";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   interface Service {
@@ -9,7 +10,7 @@ const Dashboard = () => {
     service_type: string;
     status: string;
     price: string | null;
-    date: string;
+    requested_date: string;
   }
 
   const [services, setServices] = useState<Service[]>([]);
@@ -47,16 +48,63 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar></Navbar>
-      <div className="container mt-4">
-        <h2>My Services</h2>
+      <h2 className="mb-1">Welcome back!</h2>
 
+      <p className="text-muted mb-4">
+        Here are your current and past services.
+      </p>
+
+      <div className="row mb-4">
+        <div className="col-md-4">
+          <div className="card text-center">
+            <div className="card-body">
+              <h6>Pending</h6>
+              <h3>2</h3>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="card text-center">
+            <div className="card-body">
+              <h6>Confirmed</h6>
+              <h3>1</h3>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="card text-center">
+            <div className="card-body">
+              <h6>Completed</h6>
+              <h3>15</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mt-4">
+        {/* Header */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="mb-0">My Services</h2>
+
+          <Link to="/request-service" className="btn btn-success">
+            + Request New Service
+          </Link>
+        </div>
+
+        {/* Services */}
         {services.map((service) => (
           <div key={service.id} className="mb-3 p-3 border rounded">
             <h5>{service.service_type}</h5>
+
+            <p className="mb-1">Requested: {service.requested_date}</p>
+
+            <p className="mb-2">Price: {service.price ?? "TBD"}</p>
+
             <span className={`badge bg-${getStatusColor(service.status)}`}>
               {service.status}
             </span>
-            <p>Price: {service.price || "TBD"}</p>
           </div>
         ))}
       </div>

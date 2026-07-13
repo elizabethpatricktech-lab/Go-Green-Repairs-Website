@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import RequestService from "./pages/RequestService";
 
 export default function App() {
   return (
@@ -43,6 +44,14 @@ export default function App() {
           <PublicRoute>
             <Register />
           </PublicRoute>
+        }
+      />
+      <Route
+        path="/request-service"
+        element={
+          <ProtectedRoute>
+            <RequestService />
+          </ProtectedRoute>
         }
       />
     </Routes>
