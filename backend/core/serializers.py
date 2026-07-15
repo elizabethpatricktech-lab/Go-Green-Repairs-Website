@@ -3,6 +3,16 @@ from .models import Service, Review
 from django.contrib.auth.models import User
 
 class ServiceSerializer(serializers.ModelSerializer):
+    service_type_display = serializers.CharField(
+        source="get_service_type_display",
+        read_only=True
+    )
+
+    status_display = serializers.CharField(
+        source="get_status_display",
+        read_only=True
+    )
+    
     class Meta:
         model = Service
         fields = '__all__'

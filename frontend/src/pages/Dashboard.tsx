@@ -9,6 +9,7 @@ const Dashboard = () => {
     id: number;
     service_type: string;
     status: string;
+    description: string;
     price: string | null;
     requested_date: string;
   }
@@ -32,6 +33,18 @@ const Dashboard = () => {
     }
   };
 
+  const statusSteps = [
+    "pending",
+    "confirmed",
+    "assessed",
+    "in_progress",
+    "completed",
+  ];
+
+  const getStatusIndex = (status: string) => {
+    return statusSteps.indexOf(status);
+  };
+
   useEffect(() => {
     const loadServices = async () => {
       try {
@@ -45,6 +58,18 @@ const Dashboard = () => {
     loadServices();
   }, []);
 
+  const pendingCount = services.filter(
+    (service: any) => service.status === "pending",
+  ).length;
+
+  const confirmedCount = services.filter(
+    (service: any) => service.status === "confirmed",
+  ).length;
+
+  const completedCount = services.filter(
+    (service: any) => service.status === "completed",
+  ).length;
+
   return (
     <div>
       <Navbar></Navbar>
@@ -54,30 +79,30 @@ const Dashboard = () => {
         Here are your current and past services.
       </p>
 
-      <div className="row mb-4">
-        <div className="col-md-4">
-          <div className="card text-center">
+      <div className="row justify-content-center mb-4">
+        <div className="col-lg-3 col-md-4">
+          <div className="card text-center shadow-sm">
             <div className="card-body">
-              <h6>Pending</h6>
-              <h3>2</h3>
+              <h6 className="text-muted">Pending</h6>
+              <h2>{pendingCount}</h2>
             </div>
           </div>
         </div>
 
-        <div className="col-md-4">
-          <div className="card text-center">
+        <div className="col-lg-3 col-md-4">
+          <div className="card text-center shadow-sm">
             <div className="card-body">
-              <h6>Confirmed</h6>
-              <h3>1</h3>
+              <h6 className="text-muted">Confirmed</h6>
+              <h2>{confirmedCount}</h2>
             </div>
           </div>
         </div>
 
-        <div className="col-md-4">
-          <div className="card text-center">
+        <div className="col-lg-3 col-md-4">
+          <div className="card text-center shadow-sm">
             <div className="card-body">
-              <h6>Completed</h6>
-              <h3>15</h3>
+              <h6 className="text-muted">Completed</h6>
+              <h2>{completedCount}</h2>
             </div>
           </div>
         </div>
@@ -94,19 +119,114 @@ const Dashboard = () => {
         </div>
 
         {/* Services */}
-        {services.map((service) => (
-          <div key={service.id} className="mb-3 p-3 border rounded">
-            <h5>{service.service_type}</h5>
-
-            <p className="mb-1">Requested: {service.requested_date}</p>
-
-            <p className="mb-2">Price: {service.price ?? "TBD"}</p>
-
-            <span className={`badge bg-${getStatusColor(service.status)}`}>
-              {service.status}
-            </span>
+        {services.length === 0 ? (
+          <div className="alert alert-info">
+            You haven't requested any services yet.
           </div>
-        ))}
+        ) : (
+          services.map((service: any) => (
+            <div key={service.id} className="card shadow-sm border-0 mb-4">
+              <div className="card-body">
+                {/* Header */}
+                <div className="d-flex justify-content-between align-items-center">
+                  <h5 className="mb-0">{service.service_type_display}</h5>
+
+                  <span
+                    className={`badge bg-${getStatusColor(service.status)}`}
+                  >
+                    {service.status_display}
+                  </span>
+                </div>
+
+                <hr />
+
+                {/* Description */}
+                <div className="mb-4">
+                  <h6>Description</h6>
+                  <p className="text-muted mb-0">{service.description}</p>
+                </div>
+
+                {/* Service Details */}
+                <div className="row">
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Requested Date</strong>
+                      <br />
+                      {service.requested_date}
+                    </p>
+
+                    <p>
+                      <strong>Scheduled Date</strong>
+                      <br />
+                      {service.scheduled_date || "Not scheduled yet"}
+                    </p>
+                  </div>
+
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Estimated Price</strong>
+                      <br />
+                      {service.price ?? "To Be Determined"}
+                    </p>
+
+                    <p>
+                      <strong>Admin Notes</strong>
+                      <br />
+                      {service.admin_notes || "No notes yet"}
+                    </p>
+                  </div>
+                </div>
+
+                <hr className="my-4" />
+
+                {/* Timeline / Status */}
+                {service.status === "rejected" ? (
+                  <div className="alert alert-danger">
+                    This service request was rejected.
+                  </div>
+                ) : service.status === "rescheduled" ? (
+                  <div className="alert alert-warning">
+                    Your appointment has been rescheduled.
+                    {service.scheduled_date && (
+                      <div className="mt-2">
+                        <strong>New Scheduled Date:</strong>{" "}
+                        {service.scheduled_date}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <h6 className="mb-3">Progress</h6>
+
+                    {statusSteps.map((step, index) => {
+                      const current = getStatusIndex(service.status);
+
+                      let icon = "○";
+
+                      if (index < current) icon = "✓";
+                      if (index === current) icon = "●";
+
+                      const labels: Record<string, string> = {
+                        pending: "Request Submitted",
+                        confirmed: "Confirmed",
+                        assessed: "On-Site Assessment",
+                        in_progress: "Work In Progress",
+                        completed: "Completed",
+                      };
+
+                      return (
+                        <div key={step} className="mb-2">
+                          <span className="me-2">{icon}</span>
+                          {labels[step]}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

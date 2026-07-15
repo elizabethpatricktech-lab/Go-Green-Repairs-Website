@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import RequestService from "./pages/RequestService";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -51,6 +52,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <RequestService />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />
