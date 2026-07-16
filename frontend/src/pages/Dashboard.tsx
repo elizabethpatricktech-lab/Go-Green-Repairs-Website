@@ -15,6 +15,8 @@ const Dashboard = () => {
   }
 
   const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -41,6 +43,25 @@ const Dashboard = () => {
     "completed",
   ];
 
+  const formatDate = (date: string | null) => {
+    if (!date) return "Not scheduled yet";
+
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const formatPrice = (price: number | null) => {
+    if (price == null) return "To Be Determined";
+
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
+
   const getStatusIndex = (status: string) => {
     return statusSteps.indexOf(status);
   };
@@ -52,6 +73,9 @@ const Dashboard = () => {
         setServices(data);
       } catch (error) {
         console.error(error);
+        setError("Unable to load your services.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -69,6 +93,34 @@ const Dashboard = () => {
   const completedCount = services.filter(
     (service: any) => service.status === "completed",
   ).length;
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        <div className="container text-center mt-5">
+          <div className="spinner-border text-success" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+
+          <p className="mt-3">Loading your dashboard...</p>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+
+        <div className="container mt-5">
+          <div className="alert alert-danger">{error}</div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <div>
@@ -152,13 +204,14 @@ const Dashboard = () => {
                     <p>
                       <strong>Requested Date</strong>
                       <br />
-                      {service.requested_date}
+                      {formatDate(service.requested_date)}
                     </p>
 
                     <p>
                       <strong>Scheduled Date</strong>
                       <br />
-                      {service.scheduled_date || "Not scheduled yet"}
+                      {formatDate(service.scheduled_date) ||
+                        "Not scheduled yet"}
                     </p>
                   </div>
 
@@ -166,7 +219,7 @@ const Dashboard = () => {
                     <p>
                       <strong>Estimated Price</strong>
                       <br />
-                      {service.price ?? "To Be Determined"}
+                      {formatPrice(service.price) ?? "To Be Determined"}
                     </p>
 
                     <p>
