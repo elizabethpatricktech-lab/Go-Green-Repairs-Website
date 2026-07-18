@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Service, Review
+from .models import Service, Review, CustomerProfile
 from django.contrib.auth.models import User
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -50,3 +50,21 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
         )
         return user
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source="user.first_name")
+    last_name = serializers.CharField(source="user.last_name")
+    email = serializers.EmailField(source="user.email")
+
+    class Meta:
+        model = CustomerProfile
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "address",
+            "city",
+            "state",
+            "zip_code",
+        ]

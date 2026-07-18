@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from .models import Service, Review
+from .models import Service, Review, CustomerProfile
 from .serializers import ServiceSerializer, ReviewSerializer, RegisterSerializer, ServiceRequestSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes, api_view
-
+from .serializers import CustomerProfileSerializer
 
 
 @api_view(['GET'])
@@ -30,6 +30,14 @@ def create_service(request):
         return Response(serializer.data, status=201)
 
     return Response(serializer.errors, status=400)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_profile(request):
+    profile = CustomerProfile.objects.get(user=request.user)
+    serializer = CustomerProfileSerializer(profile)
+
+    return Response(serializer.data)
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

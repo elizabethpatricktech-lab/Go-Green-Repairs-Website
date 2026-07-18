@@ -26,19 +26,31 @@ const Profile = () => {
               {profile
                 ? `${profile.first_name} ${profile.last_name}`.trim() ||
                   profile.username
-                : "Loading..."}
+                : "Not provided"}
             </p>
 
             <p>
-              <strong>Email:</strong> {profile?.email || "Loading..."}
+              <strong>Email:</strong> {profile?.email || "Not provided"}
             </p>
 
             <p>
-              <strong>Phone:</strong> Not provided
+              <strong>Phone:</strong> {profile?.phone || "Not provided"}
             </p>
 
             <p>
-              <strong>Address:</strong> Not provided
+              <strong>Address:</strong> {profile?.address || "Not provided"}
+            </p>
+
+            <p>
+              <strong>City:</strong> {profile?.city || "Not provided"}
+            </p>
+
+            <p>
+              <strong>State:</strong> {profile?.state || "Not provided"}
+            </p>
+
+            <p>
+              <strong>Zip Code:</strong> {profile?.zip_code || "Not provided"}
             </p>
           </div>
         </div>
