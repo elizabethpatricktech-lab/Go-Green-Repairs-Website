@@ -39,17 +39,26 @@ def get_profile(request):
 
     return Response(serializer.data)
 
-@api_view(["GET"])
+@api_view(["GET", "PUT"])
 @permission_classes([IsAuthenticated])
 def get_profile(request):
-    user = request.user
+    profile = CustomerProfile.objects.get(user=request.user)
 
-    return Response({
-        "username": user.username,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "email": user.email,
-    })
+    if request.method == "GET":
+        serializer = CustomerProfileSerializer(profile)
+        return Response(serializer.data)
+
+    serializer = CustomerProfileSerializer(
+        profile,
+        data=request.data,
+        partial=True,
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=400)
 
 @api_view(['GET'])
 def get_reviews(request):

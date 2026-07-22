@@ -54,7 +54,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class CustomerProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
-    email = serializers.EmailField(source="user.email")
+    email = serializers.EmailField(source="user.email", read_only=True)
 
     class Meta:
         model = CustomerProfile
@@ -68,3 +68,25 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             "state",
             "zip_code",
         ]
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", {})
+
+        instance.user.first_name = user_data.get(
+            "first_name",
+            instance.user.first_name,
+        )
+
+        instance.user.last_name = user_data.get(
+            "last_name",
+            instance.user.last_name,
+        )
+
+        instance.user.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        return instance
