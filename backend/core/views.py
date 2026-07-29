@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes, api_view
 from .serializers import CustomerProfileSerializer
+from django.shortcuts import get_object_or_404
 
 
 @api_view(['GET'])
@@ -33,12 +34,17 @@ def create_service(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_profile(request):
-    profile = CustomerProfile.objects.get(user=request.user)
-    serializer = CustomerProfileSerializer(profile)
+def get_service(request, id):
+    service = get_object_or_404(
+        Service,
+        id=id,
+        user=request.user,
+    )
+
+    serializer = ServiceSerializer(service)
 
     return Response(serializer.data)
-
+    
 @api_view(["GET", "PUT"])
 @permission_classes([IsAuthenticated])
 def get_profile(request):

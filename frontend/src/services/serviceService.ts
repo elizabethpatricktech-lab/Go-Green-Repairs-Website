@@ -40,3 +40,19 @@ export const createService = async (serviceData: {
 
   return response.json();
 };
+
+export const getService = async (id: number) => {
+  const token = localStorage.getItem("access");
+
+  const response = await fetch(`http://127.0.0.1:8000/api/services/${id}/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch service.");
+  }
+
+  return response.json();
+};

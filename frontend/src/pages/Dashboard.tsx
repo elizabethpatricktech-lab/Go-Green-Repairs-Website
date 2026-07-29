@@ -276,6 +276,15 @@ const Dashboard = () => {
                     })}
                   </div>
                 )}
+
+                <div className="mt-3 d-flex justify-content-end">
+                  <Link
+                    to={`/services/${service.id}`}
+                    className="btn btn-outline-success"
+                  >
+                    Open Request
+                  </Link>
+                </div>
               </div>
             </div>
           ))

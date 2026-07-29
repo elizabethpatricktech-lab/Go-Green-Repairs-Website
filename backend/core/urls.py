@@ -7,4 +7,5 @@ urlpatterns = [
     path("register/", views.RegisterView.as_view(), name="register"),
     path("services/create/", views.create_service, name="create_service"),
     path("profile/", views.get_profile, name="profile"),
+    path("services/<int:id>/", views.get_service),
 ]
