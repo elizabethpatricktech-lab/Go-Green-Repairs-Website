@@ -16,3 +16,23 @@ export const register = (userData: {
 export const login = (credentials: { username: string; password: string }) => {
   return API.post("/token/", credentials);
 };
+
+export const forgotPassword = async (email: string) => {
+  const response = await API.post("/forgot-password/", { email });
+
+  return response.data;
+};
+
+export const resetPassword = async (
+  uid: string,
+  token: string,
+  password: string,
+) => {
+  const response = await API.post("/reset-password/", {
+    uid,
+    token,
+    password,
+  });
+
+  return response.data;
+};

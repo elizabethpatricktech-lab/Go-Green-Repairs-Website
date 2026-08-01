@@ -13,6 +13,8 @@ import PublicRoute from "./components/PublicRoute";
 import RequestService from "./pages/RequestService";
 import Profile from "./pages/Profile";
 import ServiceDetails from "./pages/ServiceDetails";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   return (
@@ -73,6 +75,10 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
     </Routes>
   );
 }

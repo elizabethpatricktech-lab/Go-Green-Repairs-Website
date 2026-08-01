@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { login } from "../services/authService";
+import PasswordInput from "../components/PasswordInput";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -61,13 +62,11 @@ const Login = () => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Password</label>
-              <input
-                type="password"
-                className="form-control"
+              <PasswordInput
+                label="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                required
               />
             </div>
 
@@ -80,6 +79,10 @@ const Login = () => {
               <label className="form-check-label" htmlFor="remember">
                 Remember Me
               </label>
+            </div>
+
+            <div className="text-end mb-3">
+              <Link to="/forgot-password">Forgot Password?</Link>
             </div>
 
             <button type="submit" className="btn btn-success w-100 mb-3">

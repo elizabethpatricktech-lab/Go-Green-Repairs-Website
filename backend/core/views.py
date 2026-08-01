@@ -1,13 +1,17 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from .models import Service, Review, CustomerProfile
-from .serializers import ServiceSerializer, ReviewSerializer, RegisterSerializer, ServiceRequestSerializer
-from rest_framework import generics
+from .serializers import ServiceSerializer, ReviewSerializer, RegisterSerializer, ServiceRequestSerializer, CustomerProfileSerializer
+from rest_framework import generics, status
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes, api_view
-from .serializers import CustomerProfileSerializer
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from rest_framework.views import APIView
+from .emails import EmailService
 
 
 @api_view(['GET'])
@@ -75,3 +79,70 @@ def get_reviews(request):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+
+
+class ForgotPasswordView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        email = request.data.get("email")
+
+        try:
+            user = User.objects.get(email=email)
+
+            EmailService.password_reset(user)
+
+        except User.DoesNotExist:
+            pass
+
+        return Response(
+            {
+                "message": (
+                    "If an account with that email exists, "
+                    "a password reset email has been sent."
+                )
+            },
+            status=status.HTTP_200_OK,
+        )
+
+class ResetPasswordView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        uid = request.data.get("uid")
+        token = request.data.get("token")
+        password = request.data.get("password")
+
+        print("UID:", uid)
+        print("TOKEN:", token)
+        print("PASSWORD:", password)
+
+        try:
+            user_id = urlsafe_base64_decode(uid).decode()
+            print("USER ID:", user_id)
+           
+            user = User.objects.get(pk=user_id)
+            print("USER:", user)
+            print("TOKEN VALID:", default_token_generator.check_token(user, token))
+
+
+        except Exception as e:
+            print("ERROR:", repr(e))
+            return Response(
+                {"message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not default_token_generator.check_token(user, token):
+            return Response(
+                {"message": "Reset link has expired or is invalid."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.set_password(password)
+        user.save()
+
+        return Response(
+            {"message": "Password reset successfully."},
+            status=status.HTTP_200_OK,
+        )

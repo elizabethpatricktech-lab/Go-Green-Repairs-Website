@@ -166,3 +166,35 @@ class EmailService:
             """,
                         recipient=service.user.email,
                     )
+
+    @staticmethod
+    def password_reset(user):
+        from django.contrib.auth.tokens import default_token_generator
+        from django.utils.encoding import force_bytes
+        from django.utils.http import urlsafe_base64_encode
+
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+
+        reset_link = (
+            f"http://localhost:5173/reset-password/{uid}/{token}"
+        )
+
+        EmailService.send(
+            subject="Reset your Go Green Repairs password",
+            message=f"""
+            Hi {user.first_name or user.username},
+
+            We received a request to reset your password.
+
+            Click the link below to create a new password:
+
+            {reset_link}
+
+            If you didn't request this, you can safely ignore this email.
+
+            Thank you,
+            Go Green Repairs
+            """,
+                    recipient=user.email,
+                )
