@@ -52,6 +52,8 @@ class CustomerProfile(models.Model):
         related_name="profile"
     )
 
+    is_verified = models.BooleanField(default=False)
+
     phone = models.CharField(max_length=20, blank=True)
     address = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)

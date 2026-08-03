@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import ServiceDetails from "./pages/ServiceDetails";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
 
 export default function App() {
   return (
@@ -79,6 +80,8 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
       <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+
+      <Route path="/verify-email/:uid/:token" element={<VerifyEmail />} />
     </Routes>
   );
 }

@@ -10,4 +10,5 @@ urlpatterns = [
     path("services/<int:id>/", views.get_service),
     path("forgot-password/", views.ForgotPasswordView.as_view(), name="forgot-password"),
     path("reset-password/", views.ResetPasswordView.as_view(), name="reset-password"),
+    path("verify-email/", views.VerifyEmailView.as_view()),
 ]

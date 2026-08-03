@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 40px;
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+    "
+  >
+    <table
+      width="600"
+      align="center"
+      cellpadding="0"
+      cellspacing="0"
+      style="
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <tr>
+        <td
+          style="
+            background: #1f7a3d;
+            color: white;
+            padding: 24px;
+            text-align: center;
+          "
+        >
+          <h1 style="margin: 0">Go Green Repairs</h1>
+
+          <p style="margin-top: 8px">Commercial Kitchen & Bakery HVAC</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding: 32px">{% block content %} {% endblock %}</td>
+      </tr>
+
+      <tr>
+        <td
+          style="
+            background: #f8f8f8;
+            padding: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+          "
+        >
+          Questions?
+
+          <br /><br />
+
+          Go Green Repairs
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

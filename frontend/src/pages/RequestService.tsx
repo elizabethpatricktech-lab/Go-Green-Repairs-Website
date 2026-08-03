@@ -46,6 +46,9 @@ const RequestService = () => {
               value={serviceType}
               onChange={(e) => setServiceType(e.target.value)}
             >
+              <option value={""} disabled hidden>
+                Select a service...
+              </option>
               <option value={"hvac_installation"}>HVAC Installation</option>
               <option value={"hvac_repair"}>HVAC Repair</option>
               <option value={"bakery_installation"}>

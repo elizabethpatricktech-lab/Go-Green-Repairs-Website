@@ -1,0 +1,45 @@
+{% extends "emails/base.html" %} {% block title %} {{ subject }} {% endblock %}
+{% block content %}
+
+<h2>Hello {{ first_name }},</h2>
+
+<p>{{ message }}</p>
+
+<table
+  cellpadding="8"
+  cellspacing="0"
+  style="
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin: 20px 0;
+  "
+>
+  <tr>
+    <td><strong>Service</strong></td>
+    <td>{{ service.get_service_type_display }}</td>
+  </tr>
+
+  <tr>
+    <td><strong>Status</strong></td>
+    <td>{{ service.get_status_display }}</td>
+  </tr>
+
+  {% if service.scheduled_date %}
+  <tr>
+    <td><strong>Scheduled Date</strong></td>
+    <td>{{ service.scheduled_date }}</td>
+  </tr>
+  {% endif %} {% if service.price %}
+  <tr>
+    <td><strong>Estimated Price</strong></td>
+    <td>${{ service.price }}</td>
+  </tr>
+  {% endif %}
+</table>
+
+<p>If you have any questions, simply reply to this email or contact us.</p>
+
+<p>Thank you for choosing Go Green Repairs!</p>
+
+{% endblock %}

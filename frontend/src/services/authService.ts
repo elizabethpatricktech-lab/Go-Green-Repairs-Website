@@ -36,3 +36,12 @@ export const resetPassword = async (
 
   return response.data;
 };
+
+export const verifyEmail = async (uid: string, token: string) => {
+  const response = await API.post("/verify-email/", {
+    uid,
+    token,
+  });
+
+  return response.data;
+};

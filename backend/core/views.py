@@ -80,6 +80,10 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        EmailService.verify_email(user)
+
 
 class ForgotPasswordView(APIView):
     permission_classes = []
@@ -146,3 +150,39 @@ class ResetPasswordView(APIView):
             {"message": "Password reset successfully."},
             status=status.HTTP_200_OK,
         )
+
+class VerifyEmailView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        uid = request.data.get("uid")
+        token = request.data.get("token")
+
+        try:
+            user_id = urlsafe_base64_decode(uid).decode()
+            user = User.objects.get(pk=user_id)
+
+        except Exception:
+            return Response(
+                {"message": "Invalid verification link."},
+                status=400,
+            )
+
+        if user.profile.is_verified:
+            return Response(
+                {"message": "Email has already been verified."},
+                status=200,
+            )
+
+        if not default_token_generator.check_token(user, token):
+            return Response(
+                {"message": "Verification link is invalid."},
+                status=400,
+            )
+
+        user.profile.is_verified = True
+        user.profile.save()
+
+        return Response({
+            "message": "Email verified successfully."
+        })

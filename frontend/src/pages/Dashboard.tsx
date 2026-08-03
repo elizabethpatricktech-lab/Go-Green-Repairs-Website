@@ -125,7 +125,7 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar></Navbar>
-      <h2 className="mb-1">Welcome back!</h2>
+      <h2 className="mb-1">Welcome back, {}!</h2>
 
       <p className="text-muted mb-4">
         Here are your current and past services.
