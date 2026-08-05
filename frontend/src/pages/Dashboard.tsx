@@ -3,6 +3,8 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { getServices } from "../services/serviceService";
 import { Link } from "react-router-dom";
+import { getProfile } from "../services/profileService";
+import type { ProfileData } from "../types/Profile";
 
 const Dashboard = () => {
   interface Service {
@@ -17,6 +19,17 @@ const Dashboard = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      const data = await getProfile();
+      setProfile(data);
+    };
+
+    loadProfile();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -125,7 +138,9 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar></Navbar>
-      <h2 className="mb-1">Welcome back, {}!</h2>
+      <h2 className="mb-1">
+        Welcome back{profile ? `, ${profile.first_name}` : ""}!
+      </h2>
 
       <p className="text-muted mb-4">
         Here are your current and past services.

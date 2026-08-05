@@ -2,15 +2,21 @@ import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 import { getProfile, updateProfile } from "../services/profileService";
 import ProfileField from "../components/ProfileField";
+import type { ProfileData } from "../types/Profile";
+import { resendVerification } from "../services/authService";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [success, setSuccess] = useState("");
 
-  const [profile, setProfile] = useState<any>(null);
+  const [emailMessage, setEmailMessage] = useState("");
+  const [sendingEmail, setSendingEmail] = useState(false);
+
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   useEffect(() => {
     const loadProfile = async () => {
       const data = await getProfile();
+      console.log(data);
 
       setProfile(data);
 
@@ -60,6 +66,8 @@ const Profile = () => {
   };
 
   const handleCancel = () => {
+    if (!profile) return;
+
     setFormData({
       first_name: profile.first_name,
       last_name: profile.last_name,
@@ -71,6 +79,38 @@ const Profile = () => {
     });
 
     setIsEditing(false);
+  };
+
+  const handleResendVerification = async () => {
+    if (!profile) return;
+    try {
+      setSendingEmail(true);
+
+      const response = await resendVerification();
+      console.log("Is verified: ", profile.is_verified);
+
+      setEmailMessage(response.message);
+
+      setTimeout(() => {
+        setEmailMessage("");
+      }, 4000);
+    } catch (error: any) {
+      setEmailMessage(
+        error.response?.data?.message ?? "Unable to send verification email.",
+      );
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    const phone = value.replace(/\D/g, "");
+
+    if (phone.length <= 3) return phone;
+
+    if (phone.length <= 6) return `(${phone.slice(0, 3)}) ${phone.slice(3)}`;
+
+    return `(${phone.slice(0, 3)}) ${phone.slice(3, 6)}-${phone.slice(6, 10)}`;
   };
 
   if (!profile) {
@@ -134,19 +174,53 @@ const Profile = () => {
               )}
             </div>
 
-            <p>
-              <strong>Email:</strong> {profile?.email || "Not provided"}
+            <p className="mb-0">
+              <strong>Email:</strong> {profile.email || "Not provided"}
             </p>
+
+            <div className="mb-3">
+              <p className="mb-2">
+                <strong>Verification:</strong>
+              </p>
+
+              {!profile.is_verified ? (
+                <>
+                  <span className="badge bg-warning text-dark">
+                    ⚠ Not Verified
+                  </span>
+
+                  <div className="mt-2">
+                    <button
+                      className="btn btn-outline-success btn-sm"
+                      onClick={handleResendVerification}
+                      disabled={sendingEmail}
+                    >
+                      {sendingEmail
+                        ? "Sending..."
+                        : "Resend Verification Email"}
+                    </button>
+                  </div>
+
+                  {emailMessage && (
+                    <div className="text-success mt-2">{emailMessage}</div>
+                  )}
+                </>
+              ) : (
+                <span className="badge bg-success">✓ Verified</span>
+              )}
+            </div>
 
             <ProfileField
               label="Phone"
               value={formData.phone}
               isEditing={isEditing}
               placeholder="Enter your phone number"
+              maxLength={14}
+              pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
               onChange={(value) =>
                 setFormData({
                   ...formData,
-                  phone: value,
+                  phone: formatPhoneNumber(value),
                 })
               }
             />
@@ -181,11 +255,12 @@ const Profile = () => {
               label="State"
               value={formData.state}
               isEditing={isEditing}
-              placeholder="Enter your state"
+              maxLength={2}
+              className="text-uppercase"
               onChange={(value) =>
                 setFormData({
                   ...formData,
-                  state: value,
+                  state: value.toUpperCase(),
                 })
               }
             />
@@ -194,13 +269,10 @@ const Profile = () => {
               label="ZIP Code"
               value={formData.zip_code}
               isEditing={isEditing}
-              placeholder="Enter your ZIP code"
               onChange={(value) =>
-                setFormData({
-                  ...formData,
-                  zip_code: value,
-                })
+                setFormData({ ...formData, zip_code: value })
               }
+              maxLength={10}
             />
 
             {isEditing ? (

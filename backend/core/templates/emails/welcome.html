@@ -1,0 +1,45 @@
+{% extends "emails/base.html" %} {% block title %} Welcome to Go Green Repairs
+{% endblock %} {% block content %}
+
+<h2>Welcome, {{ first_name }}!</h2>
+
+<p>Thank you for creating your Go Green Repairs account.</p>
+
+<p>Your account is ready, and you can now:</p>
+
+<ul>
+  <li>Request new services</li>
+  <li>Track your appointments</li>
+  <li>View your service history</li>
+  <li>Update your profile information</li>
+</ul>
+
+<p>
+  If you haven't already, please verify your email address to help keep your
+  account secure.
+</p>
+
+<p style="text-align: center; margin-top: 30px">
+  <a
+    href="{{ dashboard_link }}"
+    style="
+      background: #198754;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+    "
+  >
+    Go to Your Account
+  </a>
+</p>
+
+<p>
+  We're happy to have you as a customer and look forward to helping with your
+  next project.
+</p>
+
+<p>— The Go Green Repairs Team</p>
+
+{% endblock %}

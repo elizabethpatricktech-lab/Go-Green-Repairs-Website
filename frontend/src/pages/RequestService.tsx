@@ -45,6 +45,7 @@ const RequestService = () => {
               className="form-select"
               value={serviceType}
               onChange={(e) => setServiceType(e.target.value)}
+              required
             >
               <option value={""} disabled hidden>
                 Select a service...
@@ -75,6 +76,7 @@ const RequestService = () => {
               rows={5}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              required
             ></textarea>
           </div>
 
@@ -86,6 +88,7 @@ const RequestService = () => {
               className="form-control"
               value={requestedDate}
               onChange={(e) => setRequestedDate(e.target.value)}
+              required
             />
           </div>
 

@@ -26,11 +26,19 @@ class Service(models.Model):
         ('other', 'Other'),
     ]
 
+    APPOINTMENT_WINDOWS = [
+    ("morning", "Morning (8 AM – 12 PM)"),
+    ("afternoon", "Afternoon (12 PM – 4 PM)"),
+    ("evening", "Evening (4 PM – 7 PM)"),
+    ]   
+
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     service_type = models.CharField(max_length=100, choices = SERVICE_CHOICES)
     description = models.TextField()
     requested_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    appointment_window = models.CharField(max_length=20, choices=APPOINTMENT_WINDOWS, blank=True)
 
     # Admin-controlled fields
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

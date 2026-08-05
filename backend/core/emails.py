@@ -160,3 +160,15 @@ class EmailService:
                 "verification_link": verification_link,
             },
         )
+
+    @staticmethod
+    def welcome_email(user):
+        EmailService.send_template(
+            subject="Welcome to Go Green Repairs!",
+            template="emails/welcome.html",
+            recipient=user.email,
+            context={
+                "first_name": user.first_name or user.username,
+                "dashboard_link": "http://localhost:5173/profile",
+            },
+    )

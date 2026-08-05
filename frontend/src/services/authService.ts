@@ -45,3 +45,19 @@ export const verifyEmail = async (uid: string, token: string) => {
 
   return response.data;
 };
+
+export const resendVerification = async () => {
+  const token = localStorage.getItem("access");
+
+  const response = await API.post(
+    "/resend-verification/",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  return response.data;
+};

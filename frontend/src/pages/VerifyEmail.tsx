@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { verifyEmail } from "../services/authService";
+import type { ProfileData } from "../types/Profile";
+import { getProfile } from "../services/profileService";
 
 const VerifyEmail = () => {
   const { uid, token } = useParams();
@@ -10,6 +12,18 @@ const VerifyEmail = () => {
 
   const [message, setMessage] = useState("Verifying your email...");
   const [success, setSuccess] = useState(false);
+
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      const data = await getProfile();
+      console.log(data);
+      setProfile(data);
+    };
+
+    loadProfile();
+  }, []);
 
   useEffect(() => {
     const verify = async () => {
@@ -25,6 +39,9 @@ const VerifyEmail = () => {
 
     verify();
   }, [uid, token]);
+
+  if (!profile) return;
+  profile.is_verified = true;
 
   return (
     <>
@@ -42,7 +59,7 @@ const VerifyEmail = () => {
                 className="btn btn-success"
                 onClick={() => navigate("/login")}
               >
-                Go to Login
+                Go to Dashboard
               </button>
             )}
           </div>

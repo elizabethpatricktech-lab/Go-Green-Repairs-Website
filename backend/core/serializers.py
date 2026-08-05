@@ -56,6 +56,8 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source="user.last_name")
     email = serializers.EmailField(source="user.email", read_only=True)
 
+    is_verified = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = CustomerProfile
         fields = [
@@ -67,6 +69,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             "city",
             "state",
             "zip_code",
+            "is_verified",
         ]
 
     def update(self, instance, validated_data):
@@ -90,3 +93,19 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+    import re
+
+    def validate_phone(self, value):
+        if value and not re.match(r"^\(\d{3}\)\s\d{3}-\d{4}$", value):
+            raise serializers.ValidationError(
+                "Enter a valid phone number."
+            )
+        return value
+
+    def validate_zip_code(self, value):
+        if value and not re.match(r"^\d{5}(-\d{4})?$", value):
+            raise serializers.ValidationError(
+                "Enter a valid ZIP code."
+            )
+        return value

@@ -183,6 +183,26 @@ class VerifyEmailView(APIView):
         user.profile.is_verified = True
         user.profile.save()
 
+        EmailService.welcome_email(user)
+
         return Response({
             "message": "Email verified successfully."
+        })
+
+class ResendVerificationEmailView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        if request.user.profile.is_verified:
+            request.user.profile.is_verified = True
+            return Response({
+                "message": "Your email is already verified."
+            })
+
+        EmailService.verify_email(request.user)
+
+        return Response({
+            "message": "Verification email sent."
         })
