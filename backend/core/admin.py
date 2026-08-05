@@ -44,6 +44,7 @@ class ServiceAdmin(admin.ModelAdmin):
     "mark_in_progress",
     "mark_completed",
     "mark_rejected",
+    "send_reminders"
     ]
 
     @admin.action(description="Mark selected services as Confirmed")
@@ -129,6 +130,17 @@ class ServiceAdmin(admin.ModelAdmin):
             f"{updated} service(s) marked as rejected."
         )
 
+    @admin.action(description="Send reminder emails")
+    def send_reminders(self, request, queryset):
+
+        for service in queryset:
+            EmailService.appointment_reminder(service)
+
+        self.message_user(
+            request,
+            f"{queryset.count()} reminder(s) sent."
+        )
+
 
     list_display = (
     "id",
@@ -141,6 +153,8 @@ class ServiceAdmin(admin.ModelAdmin):
     "requested_date",
     "scheduled_date",
     "price",
+    "requested_time_window",
+    "assigned_time_window",
 )
     search_fields = (
     "user__first_name",

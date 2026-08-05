@@ -14,6 +14,10 @@ const Dashboard = () => {
     description: string;
     price: string | null;
     requested_date: string;
+    requested_time_window: string;
+    assigned_time_window: string;
+    requested_time_window_display: string;
+    assigned_time_window_display: string;
   }
 
   const [services, setServices] = useState<Service[]>([]);
@@ -223,9 +227,22 @@ const Dashboard = () => {
                     </p>
 
                     <p>
+                      <strong>Requested Time Window</strong>
+                      <br />
+                      {service.requested_time_window_display}
+                    </p>
+
+                    <p>
                       <strong>Scheduled Date</strong>
                       <br />
                       {formatDate(service.scheduled_date) ||
+                        "Not scheduled yet"}
+                    </p>
+
+                    <p>
+                      <strong>Scheduled Time Window</strong>
+                      <br />
+                      {service.assigned_time_window_display ||
                         "Not scheduled yet"}
                     </p>
                   </div>

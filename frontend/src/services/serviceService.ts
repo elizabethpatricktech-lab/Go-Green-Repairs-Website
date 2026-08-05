@@ -21,6 +21,7 @@ export const createService = async (serviceData: {
   service_type: string;
   description: string;
   requested_date: string;
+  requested_time_window: string;
 }) => {
   const token = localStorage.getItem("access");
 

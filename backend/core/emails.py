@@ -10,6 +10,8 @@ STATUS_EMAILS = {
             "We've received your request and our team "
             "will review it shortly."
         ),
+        "show_requested": True,
+        "show_scheduled": False,
     },
 
     "confirmed": {
@@ -18,6 +20,8 @@ STATUS_EMAILS = {
             "Great news! Your request has been confirmed. "
             "We'll contact you soon with scheduling information."
         ),
+        "show_requested": True,
+        "show_scheduled": True,
     },
 
     "assessed": {
@@ -26,6 +30,8 @@ STATUS_EMAILS = {
             "We've completed the assessment and "
             "will update you with pricing soon."
         ),
+        "show_requested": False,
+        "show_scheduled": True,
     },
 
     "in_progress": {
@@ -33,6 +39,8 @@ STATUS_EMAILS = {
         "message": (
             "Our technicians have started working on your service."
         ),
+        "show_requested": False,
+        "show_scheduled": True,
     },
 
     "completed": {
@@ -41,6 +49,8 @@ STATUS_EMAILS = {
             "Your service has been completed successfully. "
             "Thank you for choosing Go Green Repairs!"
         ),
+        "show_requested": False,
+        "show_scheduled": True,
     },
 
     "rejected": {
@@ -49,6 +59,8 @@ STATUS_EMAILS = {
             "Unfortunately we're unable to complete your request. "
             "Please contact us if you'd like to discuss it."
         ),
+        "show_requested": True,
+        "show_scheduled": False,
     },
 
     "rescheduled": {
@@ -57,6 +69,8 @@ STATUS_EMAILS = {
             "Your appointment has been rescheduled. "
             "Please see the updated appointment details below."
         ),
+        "show_requested": True,
+        "show_scheduled": True,
     },
 }
 
@@ -112,6 +126,9 @@ class EmailService:
                     service.user.first_name or service.user.username
                 ),
                 "service": service,
+
+                "show_requested": config["show_requested"],
+                "show_scheduled": config["show_scheduled"],
             },
         )
 
@@ -172,3 +189,28 @@ class EmailService:
                 "dashboard_link": "http://localhost:5173/profile",
             },
     )
+
+    @staticmethod
+    def new_service_request(service):
+        EmailService.send_template(
+            subject="🔔 New Service Request",
+            template="emails/admin_new_service.html",
+            recipient=settings.ADMIN_EMAIL,
+            context={
+                "service": service,
+            },
+        )
+
+    @staticmethod
+    def appointment_reminder(service):
+        EmailService.send_template(
+            subject="Appointment Reminder",
+            template="emails/appointment_reminder.html",
+            recipient=service.user.email,
+            context={
+                "first_name": (
+                    service.user.first_name or service.user.username
+                ),
+                "service": service,
+            },
+        )

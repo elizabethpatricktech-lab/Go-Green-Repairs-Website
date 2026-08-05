@@ -1,0 +1,47 @@
+{% extends "emails/base_email.html" %} {% block content %}
+
+<h2>Appointment Reminder</h2>
+
+<p>Hi {{ first_name }},</p>
+
+<p>
+  This is a friendly reminder that you have an upcoming appointment with
+  <strong>Go Green Repairs</strong>.
+</p>
+
+<hr />
+
+<h3>Appointment Details</h3>
+
+<p>
+  <strong>Service</strong><br />
+  {{ service.get_service_type_display }}
+</p>
+
+{% if service.scheduled_date %}
+<p>
+  <strong>Date</strong><br />
+  {{ service.scheduled_date|date:"F j, Y" }}
+</p>
+{% endif %} {% if service.assigned_time_window %}
+<p>
+  <strong>Time Window</strong><br />
+  {{ service.get_assigned_time_window_display }}
+</p>
+{% endif %} {% if service.description %}
+<p>
+  <strong>Service Notes</strong><br />
+  {{ service.description }}
+</p>
+{% endif %}
+
+<hr />
+
+<p>
+  If you need to make changes to your appointment, please contact us as soon as
+  possible.
+</p>
+
+<p>We look forward to serving you!</p>
+
+{% endblock %}

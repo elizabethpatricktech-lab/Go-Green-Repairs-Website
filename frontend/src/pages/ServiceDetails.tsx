@@ -63,8 +63,18 @@ const ServiceDetails = () => {
         </p>
 
         <p>
+          <strong>Requested Time Window:</strong>{" "}
+          {service.requested_time_window_display}
+        </p>
+
+        <p>
           <strong>Scheduled Date:</strong>{" "}
           {service.scheduled_date || "Not scheduled"}
+        </p>
+
+        <p>
+          <strong>Scheduled Time Window:</strong>{" "}
+          {service.assigned_time_window_display || "Not scheduled"}
         </p>
 
         <p>

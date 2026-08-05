@@ -12,6 +12,16 @@ class ServiceSerializer(serializers.ModelSerializer):
         source="get_status_display",
         read_only=True
     )
+
+    requested_time_window_display = serializers.CharField(
+    source="get_requested_time_window_display",
+    read_only=True,
+    )
+
+    assigned_time_window_display = serializers.CharField(
+        source="get_assigned_time_window_display",
+        read_only=True,
+    )
     
     class Meta:
         model = Service
@@ -24,6 +34,7 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
             "service_type",
             "description",
             "requested_date",
+            "requested_time_window",
         ]
 
 

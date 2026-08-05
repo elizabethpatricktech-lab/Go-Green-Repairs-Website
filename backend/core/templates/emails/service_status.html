@@ -35,7 +35,39 @@
     <td><strong>Estimated Price</strong></td>
     <td>${{ service.price }}</td>
   </tr>
-  {% endif %}
+  {% endif %} {% if service.requested_date or service.requested_time_window %}
+  <hr />
+  {% endif %} {% if show_requested %}
+  <hr />
+
+  <h3>Requested Appointment</h3>
+
+  {% if service.requested_date %}
+  <p>
+    <strong>Date:</strong><br />
+    {{ service.requested_date|date:"F j, Y" }}
+  </p>
+  {% endif %} {% if service.requested_time_window %}
+  <p>
+    <strong>Preferred Time:</strong><br />
+    {{ service.get_requested_time_window_display }}
+  </p>
+  {% endif %} {% endif %} {% if show_scheduled %}
+  <hr />
+
+  <h3>Scheduled Appointment</h3>
+
+  {% if service.scheduled_date %}
+  <p>
+    <strong>Date:</strong><br />
+    {{ service.scheduled_date|date:"F j, Y" }}
+  </p>
+  {% endif %} {% if service.assigned_time_window %}
+  <p>
+    <strong>Time Window:</strong><br />
+    {{ service.get_assigned_time_window_display }}
+  </p>
+  {% endif %} {% endif %}
 </table>
 
 <p>If you have any questions, simply reply to this email or contact us.</p>

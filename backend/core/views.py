@@ -27,11 +27,8 @@ def create_service(request):
     serializer = ServiceRequestSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save(
-            user=request.user,
-            status="pending"
-        )
-
+        service = serializer.save(user=request.user, status="pending")
+        EmailService.new_service_request(service)
         return Response(serializer.data, status=201)
 
     return Response(serializer.errors, status=400)

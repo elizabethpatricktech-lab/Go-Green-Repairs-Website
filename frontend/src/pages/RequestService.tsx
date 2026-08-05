@@ -9,6 +9,7 @@ const RequestService = () => {
   const [serviceType, setServiceType] = useState("");
   const [description, setDescription] = useState("");
   const [requestedDate, setRequestedDate] = useState("");
+  const [requestedTimeWindow, setRequestedTimeWindow] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +19,7 @@ const RequestService = () => {
         service_type: serviceType,
         description,
         requested_date: requestedDate,
+        requested_time_window: requestedTimeWindow,
       });
 
       navigate("/dashboard");
@@ -90,6 +92,24 @@ const RequestService = () => {
               onChange={(e) => setRequestedDate(e.target.value)}
               required
             />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Preferred Time Window</label>
+
+            <select
+              className="form-select"
+              value={requestedTimeWindow}
+              onChange={(e) => setRequestedTimeWindow(e.target.value)}
+              required
+            >
+              <option value={""} disabled hidden>
+                Select a time window...
+              </option>
+              <option value={"morning"}>Morning 8:00 AM – 12:00 PM</option>
+              <option value={"afternoon"}>Afternoon 12:00 PM – 4:00 PM</option>
+              <option value={"evening"}>Evening 4:00 PM – 7:00 PM</option>
+            </select>
           </div>
 
           <button type="submit" className="btn btn-success">
