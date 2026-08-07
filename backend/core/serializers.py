@@ -46,11 +46,53 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(
+        write_only=True,
+        min_length=8,
+    )
 
     class Meta:
         model = User
-        fields = [ "first_name", "last_name", "email", "password",]
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+        ]
+
+    def validate_email(self, value):
+        value = value.lower().strip()
+
+        if User.objects.filter(
+            email__iexact=value
+        ).exists() or User.objects.filter(
+            username__iexact=value
+        ).exists():
+            raise serializers.ValidationError(
+                "An account with this email already exists."
+            )
+
+        return value
+
+    def validate_first_name(self, value):
+        value = value.strip()
+
+        if not value:
+            raise serializers.ValidationError(
+                "First name is required."
+            )
+
+        return value
+
+    def validate_last_name(self, value):
+        value = value.strip()
+
+        if not value:
+            raise serializers.ValidationError(
+                "Last name is required."
+            )
+
+        return value
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -60,6 +102,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
             password=validated_data["password"],
         )
+
         return user
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
