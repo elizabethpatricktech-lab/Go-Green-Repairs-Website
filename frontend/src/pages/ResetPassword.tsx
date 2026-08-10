@@ -14,11 +14,19 @@ const ResetPassword = () => {
 
   const [message, setMessage] = useState("");
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [generalError, setGeneralError] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setErrors({});
+    setGeneralError("");
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      setErrors({
+        confirmPassword: "Passwords do not match.",
+      });
       return;
     }
 
@@ -30,9 +38,24 @@ const ResetPassword = () => {
       setTimeout(() => {
         navigate("/login");
       }, 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Unable to reset password.");
+
+      const data = error.response?.data;
+
+      if (data) {
+        const fieldErrors: Record<string, string> = {};
+
+        Object.keys(data).forEach((field) => {
+          if (Array.isArray(data[field])) {
+            fieldErrors[field] = data[field][0];
+          }
+        });
+
+        setErrors(fieldErrors);
+      } else {
+        setGeneralError("Unable to reset your password. Please try again.");
+      }
     }
   };
 
@@ -46,6 +69,9 @@ const ResetPassword = () => {
             <h2 className="text-center mb-4">Reset Password</h2>
 
             {message && <div className="alert alert-success">{message}</div>}
+            {generalError && (
+              <div className="alert alert-danger">{generalError}</div>
+            )}
 
             {!message && (
               <form onSubmit={handleSubmit}>
@@ -54,6 +80,7 @@ const ResetPassword = () => {
                     label="New Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    error={errors.password}
                     required
                   />
                 </div>
@@ -62,7 +89,16 @@ const ResetPassword = () => {
                   <PasswordInput
                     label="Confirm Password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.confirmPassword;
+                        return newErrors;
+                      });
+                    }}
+                    error={errors.confirmPassword}
                     required
                   />
                 </div>

@@ -12,6 +12,8 @@ const Profile = () => {
   const [emailMessage, setEmailMessage] = useState("");
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const [profile, setProfile] = useState<ProfileData | null>(null);
   useEffect(() => {
     const loadProfile = async () => {
@@ -48,18 +50,43 @@ const Profile = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
+      setErrors({});
 
       const updatedProfile = await updateProfile(formData);
 
       setProfile(updatedProfile);
-      setFormData(updatedProfile);
+      setFormData({
+        first_name: updatedProfile.first_name,
+        last_name: updatedProfile.last_name,
+        phone: updatedProfile.phone,
+        address: updatedProfile.address,
+        city: updatedProfile.city,
+        state: updatedProfile.state,
+        zip_code: updatedProfile.zip_code,
+      });
 
       setIsEditing(false);
       setSuccess("Profile updated successfully!");
 
       setTimeout(() => setSuccess(""), 3000);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      const data = error.response?.data;
+
+      if (data) {
+        const fieldErrors: Record<string, string> = {};
+
+        Object.keys(data).forEach((field) => {
+          if (Array.isArray(data[field])) {
+            fieldErrors[field] = data[field][0];
+          }
+        });
+
+        setErrors(fieldErrors);
+      } else {
+        setErrors({
+          general: "Unable to update your profile. Please try again.",
+        });
+      }
     } finally {
       setSaving(false);
     }
@@ -131,6 +158,9 @@ const Profile = () => {
 
       <div className="container mt-4">
         {success && <div className="alert alert-success">{success}</div>}
+        {errors.general && (
+          <div className="alert alert-danger">{errors.general}</div>
+        )}
         <h2>My Profile</h2>
 
         <div className="card mt-4">
@@ -217,6 +247,7 @@ const Profile = () => {
               placeholder="Enter your phone number"
               maxLength={14}
               pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
+              error={errors.phone}
               onChange={(value) =>
                 setFormData({
                   ...formData,
@@ -230,6 +261,7 @@ const Profile = () => {
               value={formData.address}
               isEditing={isEditing}
               placeholder="Enter your address"
+              error={errors.address}
               onChange={(value) =>
                 setFormData({
                   ...formData,
@@ -243,6 +275,7 @@ const Profile = () => {
               value={formData.city}
               isEditing={isEditing}
               placeholder="Enter your city"
+              error={errors.city}
               onChange={(value) =>
                 setFormData({
                   ...formData,
@@ -257,6 +290,7 @@ const Profile = () => {
               isEditing={isEditing}
               maxLength={2}
               className="text-uppercase"
+              error={errors.state}
               onChange={(value) =>
                 setFormData({
                   ...formData,
@@ -269,8 +303,12 @@ const Profile = () => {
               label="ZIP Code"
               value={formData.zip_code}
               isEditing={isEditing}
+              error={errors.zip_code}
               onChange={(value) =>
-                setFormData({ ...formData, zip_code: value })
+                setFormData({
+                  ...formData,
+                  zip_code: value,
+                })
               }
               maxLength={10}
             />

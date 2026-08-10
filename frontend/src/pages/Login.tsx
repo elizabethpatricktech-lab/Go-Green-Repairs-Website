@@ -11,15 +11,27 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setError("");
+    setEmailError("");
+
+    if (!email.trim()) {
+      setEmailError("Email is required.");
+      return;
+    }
+
+    if (!password) {
+      setError("Password is required.");
+      return;
+    }
 
     try {
       const response = await login({
-        username: email,
+        username: email.trim(),
         password,
       });
 
@@ -31,6 +43,7 @@ const Login = () => {
       setError("Invalid email or password.");
     }
   };
+
   return (
     <div>
       <Navbar></Navbar>
@@ -52,13 +65,22 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Email</label>
+
               <input
-                type="text"
-                className="form-control"
+                type="email"
+                className={`form-control ${emailError ? "is-invalid" : ""}`}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError("");
+                }}
                 placeholder="Enter your email"
+                required
               />
+
+              {emailError && (
+                <div className="invalid-feedback">{emailError}</div>
+              )}
             </div>
 
             <div className="mb-3">

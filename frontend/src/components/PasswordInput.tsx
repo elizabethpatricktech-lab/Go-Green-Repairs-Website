@@ -6,6 +6,7 @@ interface PasswordInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
+  error?: string;
 }
 
 const PasswordInput = ({
@@ -13,6 +14,7 @@ const PasswordInput = ({
   value,
   onChange,
   placeholder,
+  error,
   required = false,
 }: PasswordInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +26,7 @@ const PasswordInput = ({
       <div className="position-relative">
         <input
           type={showPassword ? "text" : "password"}
-          className="form-control pe-5"
+          className={`form-control pe-5 ${error ? "is-invalid" : ""}`}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
@@ -42,6 +44,8 @@ const PasswordInput = ({
           />
         </button>
       </div>
+
+      {error && <div className="invalid-feedback d-block">{error}</div>}
     </div>
   );
 };

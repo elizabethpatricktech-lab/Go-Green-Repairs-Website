@@ -10,24 +10,45 @@ const ContactForm: React.FC = () => {
     setSelectedValue(parseInt(event.target.value));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setError("");
+    setSuccess("");
+    setSubmitting(true);
+
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    fetch(form.action, {
-      method: form.method,
-      body: formData,
-    })
-      .then((res) => {
-        if (res.ok) {
-          alert("Thanks — your message was sent!");
-          form.reset();
-        } else {
-          alert("Oops — something went wrong");
-        }
-      })
-      .catch(() => alert("Submission failed — please try again later"));
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Submission failed.");
+      }
+
+      setSuccess(
+        "Thanks — your message has been sent! We'll get back to you soon.",
+      );
+
+      form.reset();
+      setSelectedValue(1);
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        "We couldn't send your message. Please try again or contact us directly.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -57,6 +78,9 @@ const ContactForm: React.FC = () => {
           {/* Right: Contact Form */}
           <div className="col-lg-6 mx-auto">
             <h2 className="mb-4">Contact Us</h2>
+            {success && <div className="alert alert-success">{success}</div>}
+
+            {error && <div className="alert alert-danger">{error}</div>}
             <form
               id="contactForm"
               action="https://script.google.com/macros/s/AKfycbwJBDZH9wBCWj1OfBcisVtYk1--zj25sWKx7h1M_7ncjAMQdc8LDSbILPgh53NCVTHSmA/exec"
@@ -101,6 +125,7 @@ const ContactForm: React.FC = () => {
                     id="phone"
                     name="phone"
                     placeholder="(123) 456‑7890"
+                    maxLength={14}
                   />
                 </div>
                 <div className="col-sm-6">
@@ -161,9 +186,9 @@ const ContactForm: React.FC = () => {
                   <input
                     className="form-check-input"
                     type="radio"
-                    name="radioDefault"
-                    id="radioDefault1"
-                    value={1}
+                    name="sms_consent"
+                    id="smsYes"
+                    value="yes"
                     checked={selectedValue === 1}
                     onChange={handleRadioChange}
                   />
@@ -175,9 +200,9 @@ const ContactForm: React.FC = () => {
                   <input
                     className="form-check-input"
                     type="radio"
-                    name="radioDefault"
-                    id="radioDefault2"
-                    value={2}
+                    name="sms_consent"
+                    id="smsNo"
+                    value="no"
                     checked={selectedValue === 2}
                     onChange={handleRadioChange}
                   />
@@ -192,8 +217,12 @@ const ContactForm: React.FC = () => {
                 </p>
               </div>
 
-              <button type="submit" className="btn btn-success btn-lg w-100">
-                Submit
+              <button
+                type="submit"
+                className="btn btn-success btn-lg w-100"
+                disabled={submitting}
+              >
+                {submitting ? "Sending..." : "Submit"}
               </button>
             </form>
 

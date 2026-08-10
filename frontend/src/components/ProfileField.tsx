@@ -10,6 +10,7 @@ interface ProfileFieldProps {
   pattern?: string;
   type?: string;
   className?: string;
+  error?: string;
 }
 
 const ProfileField = ({
@@ -22,6 +23,7 @@ const ProfileField = ({
   required,
   pattern,
   className,
+  error,
   type = "text",
 }: ProfileFieldProps) => {
   return (
@@ -31,15 +33,17 @@ const ProfileField = ({
           <label className="form-label fw-bold">{label}</label>
 
           <input
-            className={`form-control ${className ?? ""}`}
-            type={type}
+            className={`form-control ${className ?? ""} ${
+              error ? "is-invalid" : ""
+            }`}
             value={value}
             placeholder={placeholder}
             maxLength={maxLength}
-            required={required}
             pattern={pattern}
             onChange={(e) => onChange(e.target.value)}
           />
+
+          {error && <div className="invalid-feedback">{error}</div>}
         </>
       ) : (
         <p className="mb-0">
