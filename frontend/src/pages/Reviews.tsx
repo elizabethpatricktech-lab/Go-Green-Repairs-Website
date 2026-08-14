@@ -4,7 +4,7 @@ const Reviews = () => {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/reviews/")
+    fetch(`${import.meta.env.VITE_API_URL}/reviews/`)
       .then((res) => res.json())
       .then((data) => setReviews(data));
   }, []);

@@ -142,7 +142,7 @@ class EmailService:
         token = default_token_generator.make_token(user)
 
         reset_link = (
-            f"http://localhost:5173/reset-password/{uid}/{token}"
+            f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}"
         )
 
         EmailService.send_template(
@@ -165,7 +165,7 @@ class EmailService:
         token = default_token_generator.make_token(user)
 
         verification_link = (
-            f"http://localhost:5173/verify-email/{uid}/{token}"
+            f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}"
         )
 
         EmailService.send_template(
@@ -186,7 +186,7 @@ class EmailService:
             recipient=user.email,
             context={
                 "first_name": user.first_name or user.username,
-                "dashboard_link": "http://localhost:5173/profile",
+                "dashboard_link": f"{settings.FRONTEND_URL}/profile",
             },
     )
 

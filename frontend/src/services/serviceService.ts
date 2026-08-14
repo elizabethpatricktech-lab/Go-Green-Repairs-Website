@@ -1,20 +1,9 @@
-const API_URL = "http://127.0.0.1:8000/api/services/";
+import { API } from "./authService";
 
 export const getServices = async () => {
-  const token = localStorage.getItem("access");
+  const response = await API.get("/services/");
 
-  const response = await fetch(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch services");
-  }
-
-  return response.json();
+  return response.data;
 };
 
 export const createService = async (serviceData: {
@@ -23,37 +12,13 @@ export const createService = async (serviceData: {
   requested_date: string;
   requested_time_window: string;
 }) => {
-  const token = localStorage.getItem("access");
+  const response = await API.post("/services/create/", serviceData);
 
-  const response = await fetch(`${API_URL}create/`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(serviceData),
-  });
-
-  if (!response.ok) {
-    console.log(await response.json());
-    throw new Error("Failed to create service request");
-  }
-
-  return response.json();
+  return response.data;
 };
 
 export const getService = async (id: number) => {
-  const token = localStorage.getItem("access");
+  const response = await API.get(`/services/${id}/`);
 
-  const response = await fetch(`http://127.0.0.1:8000/api/services/${id}/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch service.");
-  }
-
-  return response.json();
+  return response.data;
 };
