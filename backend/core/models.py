@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -73,10 +74,34 @@ class CustomerProfile(models.Model):
         return self.user.username
 
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    rating = models.IntegerField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        null=True,
+    blank=True,
+    )
+
+    service = models.OneToOneField(
+        Service,
+        on_delete=models.CASCADE,
+        related_name="review",
+        null=True,
+    blank=True,
+    )
+
+    rating = models.PositiveSmallIntegerField(
+    validators=[
+        MinValueValidator(1),
+        MaxValueValidator(5),
+    ]
+)
+
     comment = models.TextField()
+
+    is_approved = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} ({self.rating}/5)"
+        return f"{self.user.email} - {self.rating}/5"

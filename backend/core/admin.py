@@ -175,6 +175,25 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('user', 'rating', 'created_at')
-    search_fields = ('user__username', 'comment')
-    list_filter = ('rating', 'created_at')
+    list_display = (
+        "id",
+        "user",
+        "service",
+        "rating",
+        "is_approved",
+        "created_at",
+    )
+
+    list_filter = (
+        "rating",
+        "is_approved",
+    )
+
+    search_fields = (
+        "user__email",
+        "user__first_name",
+        "user__last_name",
+        "comment",
+    )
+
+    ordering = ("-created_at",)
