@@ -1,10 +1,11 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getServices } from "../services/serviceService";
 import { Link } from "react-router-dom";
 import { getProfile } from "../services/profileService";
 import type { ProfileData } from "../types/Profile";
+import ReviewForm from "../components/ReviewForm";
+import { createReview } from "../services/reviewService";
 
 const Dashboard = () => {
   interface Service {
@@ -25,6 +26,9 @@ const Dashboard = () => {
   const [error, setError] = useState("");
 
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [reviewingServiceId, setReviewingServiceId] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -307,6 +311,35 @@ const Dashboard = () => {
                       );
                     })}
                   </div>
+                )}
+
+                {service.status === "completed" && !service.has_review && (
+                  <div className="mt-3 d-flex justify-content-end">
+                    <button
+                      className="btn btn-outline-warning"
+                      onClick={() => setReviewingServiceId(service.id)}
+                    >
+                      ★ Leave a Review
+                    </button>
+                  </div>
+                )}
+
+                {reviewingServiceId === service.id && (
+                  <ReviewForm
+                    serviceId={service.id}
+                    onSuccess={() => {
+                      setReviewingServiceId(null);
+
+                      setServices((prev) =>
+                        prev.map((item) =>
+                          item.id === service.id
+                            ? { ...item, has_review: true }
+                            : item,
+                        ),
+                      );
+                    }}
+                    onCancel={() => setReviewingServiceId(null)}
+                  />
                 )}
 
                 <div className="mt-3 d-flex justify-content-end">

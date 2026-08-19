@@ -22,7 +22,12 @@ class ServiceSerializer(serializers.ModelSerializer):
         source="get_assigned_time_window_display",
         read_only=True,
     )
-    
+
+    has_review = serializers.SerializerMethodField()
+
+    def get_has_review(self, obj):
+        return hasattr(obj, "review")
+
     class Meta:
         model = Service
         fields = '__all__'
@@ -39,11 +44,47 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)    
+    username = serializers.CharField(
+        source="user.username",
+        read_only=True,
+    )
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = "__all__"
+        read_only_fields = [
+            "user",
+            "is_approved",
+            "created_at",
+        ]
+
+    def validate(self, attrs):
+        request = self.context["request"]
+        user = request.user
+
+        service = attrs.get("service")
+
+        if not service:
+            raise serializers.ValidationError({
+                "service": "A service is required."
+            })
+
+        if service.user != user:
+            raise serializers.ValidationError({
+                "service": "You can only review your own service."
+            })
+
+        if service.status != "completed":
+            raise serializers.ValidationError({
+                "service": "You can only review completed services."
+            })
+
+        if Review.objects.filter(service=service).exists():
+            raise serializers.ValidationError({
+                "service": "You have already reviewed this service."
+            })
+
+        return attrs
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(

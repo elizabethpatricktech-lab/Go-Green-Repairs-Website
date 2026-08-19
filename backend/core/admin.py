@@ -176,24 +176,29 @@ class ServiceAdmin(admin.ModelAdmin):
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "user",
         "service",
         "rating",
+        "comment",
         "is_approved",
-        "created_at",
     )
 
     list_filter = (
-        "rating",
         "is_approved",
+        "rating",
     )
 
     search_fields = (
-        "user__email",
-        "user__first_name",
-        "user__last_name",
+        "user__username",
         "comment",
     )
 
-    ordering = ("-created_at",)
+    @admin.action(description="Approve selected reviews")
+    def approve_reviews(modeladmin, request, queryset):
+        queryset.update(is_approved=True)
+
+    @admin.action(description="Reject selected reviews")
+    def reject_reviews(modeladmin, request, queryset):
+        queryset.update(is_approved=False)
+
+    actions = [approve_reviews, reject_reviews]

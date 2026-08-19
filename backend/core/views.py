@@ -67,11 +67,44 @@ def get_profile(request):
 
     return Response(serializer.errors, status=400)
 
-@api_view(['GET'])
-def get_reviews(request):
-    reviews = Review.objects.all()
-    serializer = ReviewSerializer(reviews, many=True)
-    return Response(serializer.data)
+@api_view(["GET", "POST"])
+def reviews(request):
+    if request.method == "GET":
+        reviews = Review.objects.filter(
+            is_approved=True
+        ).order_by("-created_at")
+
+        serializer = ReviewSerializer(
+            reviews,
+            many=True,
+        )
+
+        return Response(serializer.data)
+
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return Response(
+                {"message": "Authentication required."},
+                status=401,
+            )
+
+        serializer = ReviewSerializer(
+            data=request.data,
+            context={"request": request},
+        )
+
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+
+            return Response(
+                serializer.data,
+                status=201,
+            )
+
+        return Response(
+            serializer.errors,
+            status=400,
+        )
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
